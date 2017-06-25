@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import com.nghiepnguyen.weatherapp.domain.commands.RequestForecastCommand
+import org.jetbrains.anko.async
+import org.jetbrains.anko.uiThread
 
 class MainActivity : AppCompatActivity() {
     private val items = listOf("Mon 6/23 - Sunny - 31/17",
@@ -21,5 +24,14 @@ class MainActivity : AppCompatActivity() {
         forecastList.layoutManager = LinearLayoutManager(this)
         forecastList.adapter = ForecastListAdapter(items)
 
+        async() {
+            /*Request("http://samples.openweathermap.org/data/2.5/weather?q=London,uk&appid=56fe1680aa947723ca41ed679c95f8db").run()
+            uiThread { longToast("Request performed") }*/
+
+            val result = RequestForecastCommand("94043").execute()
+            uiThread {
+                forecastList.adapter = ForecastListAdapter(result)
+            }
+        }
     }
 }
